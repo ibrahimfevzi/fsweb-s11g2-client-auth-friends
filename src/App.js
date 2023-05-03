@@ -1,36 +1,65 @@
-import { Route, Switch, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import LoginForm from "./components/LoginForm";
+import { AuthContext } from "./context/AuthContext";
+import FriendsList from "./components/FriendsList";
+import Friend from "./components/Friend";
+import AddFriend from "./components/AddFriend";
+import Header from "./components/Header";
+const localStorageKey = "S11G20223";
 
-import Login from "./components/login";
 function App() {
+  const [isLoggedIn, setisLoggedIn] = useState(false);
+  const [loggedInToken, setloggedInToken] = useState(null);
+
+  useEffect(() => {
+    const token = window.localStorage.getItem(localStorageKey);
+
+    if (token) {
+      setisLoggedIn(true);
+      setloggedInToken(token);
+    }
+  }, [isLoggedIn]);
+
   return (
-    <div className="App">
-      <div className="flex justify-between items-baseline mt-4">
-        <h1 className="ml-20 font-bold text-3xl">FRIENDS DATABASE</h1>
-        <div className="flex gap-4 mr-20">
-          <Link
-            to="/login"
-            className="border border-black p-3 bg-black text-white"
-          >
-            LOGIN
-          </Link>
-          <Link
-            to="/friendlist"
-            className="border border-black p-3 bg-black text-white"
-          >
-            FRIENDSLIST
-          </Link>
-          <Link
-            to="/addfriend"
-            className="border border-black p-3 bg-black text-white"
-          >
-            ADDFRIEND
-          </Link>
-        </div>
+    <AuthContext.Provider
+      value={{
+        setisLoggedIn,
+        isLoggedIn,
+        setloggedInToken,
+        localStorageKey,
+        loggedInToken,
+      }}
+    >
+      <div className="App">
+        <Header />
+        <Routes>
+          <Route exact path="/" element={<LoginForm />} />
+          <Route path="/login" element={<LoginForm />} />
+
+          {/* <Route
+          render={() =>
+            isLoggedIn ? <FriendsList /> : <Redirect to="/login" />
+          }
+          exact
+          path="/friends-list"
+          />
+          
+          <Route path="/friends/add" element={<AddFriend />} />
+        */}
+          <Route
+            path="/friends/:id"
+            element={<Friend localStorageKey={localStorageKey} />}
+          />
+          <Route path="/friends-list" element={<FriendsList />} />
+          <Route
+            path="/friends/add"
+            element={<AddFriend localStorageKey={localStorageKey} />}
+          />
+        </Routes>
       </div>
-      <Switch>
-        <Route path="/login" component={Login} />
-      </Switch>
-    </div>
+    </AuthContext.Provider>
   );
 }
 
