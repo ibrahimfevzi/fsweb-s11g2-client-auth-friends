@@ -52,13 +52,18 @@ const LoginForm = () => {
         <form onSubmit={handleSubmit}>
           <div>
             <h2>USERNAME</h2>
-            <input name="username" onChange={handleChange}></input>
+            <input
+              name="username"
+              placeholder="workintech"
+              onChange={handleChange}
+            ></input>
           </div>
           <div>
             <h2>PASSWORD</h2>
             <input
               type="password"
               name="password"
+              placeholder="wecandoit"
               onChange={handleChange}
             ></input>
           </div>
